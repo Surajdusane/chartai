@@ -1,0 +1,2306 @@
+{
+  "openapi": "3.1.1",
+  "jsonSchemaDialect": "https://spec.openapis.org/oas/3.1/dialect/base",
+  "info": {
+    "title": "ProWater Ops API",
+    "version": "0.1.0"
+  },
+  "servers": [
+    {
+      "url": "/api/trpc"
+    }
+  ],
+  "paths": {
+    "/health.ping": {
+      "get": {
+        "operationId": "health.ping",
+        "tags": [
+          "health"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "ok": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": [
+                            "ok"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "result"
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/chats.getMany": {
+      "get": {
+        "operationId": "chats.getMany",
+        "tags": [
+          "chats"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "createdAt": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "title": {
+                                "type": "string"
+                              },
+                              "updatedAt": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "dataset": {
+                                "oneOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "string"
+                                      },
+                                      "name": {
+                                        "type": "string"
+                                      },
+                                      "rowCount": {
+                                        "type": "number"
+                                      }
+                                    },
+                                    "required": [
+                                      "id",
+                                      "name",
+                                      "rowCount"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "createdAt",
+                              "title",
+                              "updatedAt",
+                              "dataset"
+                            ],
+                            "additionalProperties": false
+                          }
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "result"
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/chats.getById": {
+      "get": {
+        "operationId": "chats.getById",
+        "tags": [
+          "chats"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "title": {
+                              "type": "string"
+                            },
+                            "datasetId": {
+                              "type": "string"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "messages": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "createdAt": {
+                                    "type": "string",
+                                    "format": "date-time"
+                                  },
+                                  "chatId": {
+                                    "type": "string"
+                                  },
+                                  "role": {
+                                    "type": "string",
+                                    "enum": [
+                                      "system",
+                                      "user",
+                                      "assistant"
+                                    ]
+                                  },
+                                  "parts": {
+                                    "type": "array",
+                                    "items": {
+                                      "oneOf": [
+                                        {
+                                          "$ref": "#/components/schemas/TextUIPart"
+                                        },
+                                        {
+                                          "$ref": "#/components/schemas/CustomContentUIPart"
+                                        },
+                                        {
+                                          "$ref": "#/components/schemas/ReasoningUIPart"
+                                        },
+                                        {
+                                          "type": "object",
+                                          "properties": {
+                                            "type": {
+                                              "type": "string",
+                                              "const": "dynamic-tool"
+                                            },
+                                            "dynamic": {
+                                              "type": "boolean",
+                                              "const": false
+                                            },
+                                            "toolName": {
+                                              "type": "string"
+                                            },
+                                            "toolCallId": {
+                                              "type": "string"
+                                            },
+                                            "title": {
+                                              "type": "string"
+                                            },
+                                            "toolMetadata": {
+                                              "type": "object",
+                                              "additionalProperties": {
+                                                "$ref": "#/components/schemas/RecursiveType"
+                                              }
+                                            },
+                                            "providerExecuted": {
+                                              "type": "boolean"
+                                            },
+                                            "state": {
+                                              "type": "string",
+                                              "const": "input-streaming"
+                                            },
+                                            "input": {},
+                                            "rawInput": {
+                                              "type": "string"
+                                            },
+                                            "inputEncoding": {
+                                              "type": "string",
+                                              "enum": [
+                                                "text",
+                                                "json"
+                                              ]
+                                            },
+                                            "output": {},
+                                            "errorText": {},
+                                            "callProviderMetadata": {
+                                              "type": "object",
+                                              "additionalProperties": {
+                                                "type": "object",
+                                                "additionalProperties": {
+                                                  "$ref": "#/components/schemas/RecursiveType"
+                                                }
+                                              }
+                                            },
+                                            "approval": {}
+                                          },
+                                          "required": [
+                                            "type",
+                                            "toolName",
+                                            "toolCallId",
+                                            "state"
+                                          ],
+                                          "additionalProperties": false
+                                        },
+                                        {
+                                          "type": "object",
+                                          "properties": {
+                                            "type": {
+                                              "type": "string",
+                                              "const": "dynamic-tool"
+                                            },
+                                            "dynamic": {
+                                              "type": "boolean",
+                                              "const": false
+                                            },
+                                            "toolName": {
+                                              "type": "string"
+                                            },
+                                            "toolCallId": {
+                                              "type": "string"
+                                            },
+                                            "title": {
+                                              "type": "string"
+                                            },
+                                            "toolMetadata": {
+                                              "type": "object",
+                                              "additionalProperties": {
+                                                "$ref": "#/components/schemas/RecursiveType"
+                                              }
+                                            },
+                                            "providerExecuted": {
+                                              "type": "boolean"
+                                            },
+                                            "state": {
+                                              "type": "string",
+                                              "const": "input-available"
+                                            },
+                                            "input": {},
+                                            "output": {},
+                                            "errorText": {},
+                                            "callProviderMetadata": {
+                                              "type": "object",
+                                              "additionalProperties": {
+                                                "type": "object",
+                                                "additionalProperties": {
+                                                  "$ref": "#/components/schemas/RecursiveType"
+                                                }
+                                              }
+                                            },
+                                            "approval": {}
+                                          },
+                                          "required": [
+                                            "type",
+                                            "toolName",
+                                            "toolCallId",
+                                            "state",
+                                            "input"
+                                          ],
+                                          "additionalProperties": false
+                                        },
+                                        {
+                                          "type": "object",
+                                          "properties": {
+                                            "type": {
+                                              "type": "string",
+                                              "const": "dynamic-tool"
+                                            },
+                                            "dynamic": {
+                                              "type": "boolean",
+                                              "const": false
+                                            },
+                                            "toolName": {
+                                              "type": "string"
+                                            },
+                                            "toolCallId": {
+                                              "type": "string"
+                                            },
+                                            "title": {
+                                              "type": "string"
+                                            },
+                                            "toolMetadata": {
+                                              "type": "object",
+                                              "additionalProperties": {
+                                                "$ref": "#/components/schemas/RecursiveType"
+                                              }
+                                            },
+                                            "providerExecuted": {
+                                              "type": "boolean"
+                                            },
+                                            "state": {
+                                              "type": "string",
+                                              "const": "approval-requested"
+                                            },
+                                            "input": {},
+                                            "output": {},
+                                            "errorText": {},
+                                            "callProviderMetadata": {
+                                              "type": "object",
+                                              "additionalProperties": {
+                                                "type": "object",
+                                                "additionalProperties": {
+                                                  "$ref": "#/components/schemas/RecursiveType"
+                                                }
+                                              }
+                                            },
+                                            "approval": {
+                                              "type": "object",
+                                              "properties": {
+                                                "id": {
+                                                  "type": "string"
+                                                },
+                                                "approved": {},
+                                                "descriptor": {},
+                                                "requestReason": {
+                                                  "type": "string"
+                                                },
+                                                "reason": {},
+                                                "isAutomatic": {
+                                                  "type": "boolean"
+                                                },
+                                                "signature": {
+                                                  "type": "string"
+                                                },
+                                                "inputSchemaInput": {}
+                                              },
+                                              "required": [
+                                                "id"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          },
+                                          "required": [
+                                            "type",
+                                            "toolName",
+                                            "toolCallId",
+                                            "state",
+                                            "input",
+                                            "approval"
+                                          ],
+                                          "additionalProperties": false
+                                        },
+                                        {
+                                          "type": "object",
+                                          "properties": {
+                                            "type": {
+                                              "type": "string",
+                                              "const": "dynamic-tool"
+                                            },
+                                            "dynamic": {
+                                              "type": "boolean",
+                                              "const": false
+                                            },
+                                            "toolName": {
+                                              "type": "string"
+                                            },
+                                            "toolCallId": {
+                                              "type": "string"
+                                            },
+                                            "title": {
+                                              "type": "string"
+                                            },
+                                            "toolMetadata": {
+                                              "type": "object",
+                                              "additionalProperties": {
+                                                "$ref": "#/components/schemas/RecursiveType"
+                                              }
+                                            },
+                                            "providerExecuted": {
+                                              "type": "boolean"
+                                            },
+                                            "state": {
+                                              "type": "string",
+                                              "const": "approval-responded"
+                                            },
+                                            "input": {},
+                                            "output": {},
+                                            "errorText": {},
+                                            "callProviderMetadata": {
+                                              "type": "object",
+                                              "additionalProperties": {
+                                                "type": "object",
+                                                "additionalProperties": {
+                                                  "$ref": "#/components/schemas/RecursiveType"
+                                                }
+                                              }
+                                            },
+                                            "approval": {
+                                              "type": "object",
+                                              "properties": {
+                                                "id": {
+                                                  "type": "string"
+                                                },
+                                                "approved": {
+                                                  "type": "boolean"
+                                                },
+                                                "descriptor": {},
+                                                "requestReason": {
+                                                  "type": "string"
+                                                },
+                                                "reason": {
+                                                  "type": "string"
+                                                },
+                                                "isAutomatic": {
+                                                  "type": "boolean"
+                                                },
+                                                "signature": {
+                                                  "type": "string"
+                                                },
+                                                "inputSchemaInput": {}
+                                              },
+                                              "required": [
+                                                "id",
+                                                "approved"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          },
+                                          "required": [
+                                            "type",
+                                            "toolName",
+                                            "toolCallId",
+                                            "state",
+                                            "input",
+                                            "approval"
+                                          ],
+                                          "additionalProperties": false
+                                        },
+                                        {
+                                          "type": "object",
+                                          "properties": {
+                                            "type": {
+                                              "type": "string",
+                                              "const": "dynamic-tool"
+                                            },
+                                            "dynamic": {
+                                              "type": "boolean",
+                                              "const": false
+                                            },
+                                            "toolName": {
+                                              "type": "string"
+                                            },
+                                            "toolCallId": {
+                                              "type": "string"
+                                            },
+                                            "title": {
+                                              "type": "string"
+                                            },
+                                            "toolMetadata": {
+                                              "type": "object",
+                                              "additionalProperties": {
+                                                "$ref": "#/components/schemas/RecursiveType"
+                                              }
+                                            },
+                                            "providerExecuted": {
+                                              "type": "boolean"
+                                            },
+                                            "state": {
+                                              "type": "string",
+                                              "const": "output-available"
+                                            },
+                                            "input": {},
+                                            "output": {},
+                                            "errorText": {},
+                                            "callProviderMetadata": {
+                                              "type": "object",
+                                              "additionalProperties": {
+                                                "type": "object",
+                                                "additionalProperties": {
+                                                  "$ref": "#/components/schemas/RecursiveType"
+                                                }
+                                              }
+                                            },
+                                            "resultProviderMetadata": {
+                                              "type": "object",
+                                              "additionalProperties": {
+                                                "type": "object",
+                                                "additionalProperties": {
+                                                  "$ref": "#/components/schemas/RecursiveType"
+                                                }
+                                              }
+                                            },
+                                            "preliminary": {
+                                              "type": "boolean"
+                                            },
+                                            "approval": {
+                                              "type": "object",
+                                              "properties": {
+                                                "id": {
+                                                  "type": "string"
+                                                },
+                                                "approved": {
+                                                  "type": "boolean",
+                                                  "const": true
+                                                },
+                                                "descriptor": {},
+                                                "requestReason": {
+                                                  "type": "string"
+                                                },
+                                                "reason": {
+                                                  "type": "string"
+                                                },
+                                                "isAutomatic": {
+                                                  "type": "boolean"
+                                                },
+                                                "signature": {
+                                                  "type": "string"
+                                                },
+                                                "inputSchemaInput": {}
+                                              },
+                                              "required": [
+                                                "id",
+                                                "approved"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          },
+                                          "required": [
+                                            "type",
+                                            "toolName",
+                                            "toolCallId",
+                                            "state",
+                                            "input",
+                                            "output"
+                                          ],
+                                          "additionalProperties": false
+                                        },
+                                        {
+                                          "type": "object",
+                                          "properties": {
+                                            "type": {
+                                              "type": "string",
+                                              "const": "dynamic-tool"
+                                            },
+                                            "dynamic": {
+                                              "type": "boolean",
+                                              "const": false
+                                            },
+                                            "toolName": {
+                                              "type": "string"
+                                            },
+                                            "toolCallId": {
+                                              "type": "string"
+                                            },
+                                            "title": {
+                                              "type": "string"
+                                            },
+                                            "toolMetadata": {
+                                              "type": "object",
+                                              "additionalProperties": {
+                                                "$ref": "#/components/schemas/RecursiveType"
+                                              }
+                                            },
+                                            "providerExecuted": {
+                                              "type": "boolean"
+                                            },
+                                            "state": {
+                                              "type": "string",
+                                              "const": "output-error"
+                                            },
+                                            "input": {},
+                                            "output": {},
+                                            "errorText": {
+                                              "type": "string"
+                                            },
+                                            "callProviderMetadata": {
+                                              "type": "object",
+                                              "additionalProperties": {
+                                                "type": "object",
+                                                "additionalProperties": {
+                                                  "$ref": "#/components/schemas/RecursiveType"
+                                                }
+                                              }
+                                            },
+                                            "resultProviderMetadata": {
+                                              "type": "object",
+                                              "additionalProperties": {
+                                                "type": "object",
+                                                "additionalProperties": {
+                                                  "$ref": "#/components/schemas/RecursiveType"
+                                                }
+                                              }
+                                            },
+                                            "approval": {
+                                              "type": "object",
+                                              "properties": {
+                                                "id": {
+                                                  "type": "string"
+                                                },
+                                                "approved": {
+                                                  "type": "boolean",
+                                                  "const": true
+                                                },
+                                                "descriptor": {},
+                                                "requestReason": {
+                                                  "type": "string"
+                                                },
+                                                "reason": {
+                                                  "type": "string"
+                                                },
+                                                "isAutomatic": {
+                                                  "type": "boolean"
+                                                },
+                                                "signature": {
+                                                  "type": "string"
+                                                },
+                                                "inputSchemaInput": {}
+                                              },
+                                              "required": [
+                                                "id",
+                                                "approved"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          },
+                                          "required": [
+                                            "type",
+                                            "toolName",
+                                            "toolCallId",
+                                            "state",
+                                            "input",
+                                            "errorText"
+                                          ],
+                                          "additionalProperties": false
+                                        },
+                                        {
+                                          "type": "object",
+                                          "properties": {
+                                            "type": {
+                                              "type": "string",
+                                              "const": "dynamic-tool"
+                                            },
+                                            "dynamic": {
+                                              "type": "boolean",
+                                              "const": false
+                                            },
+                                            "toolName": {
+                                              "type": "string"
+                                            },
+                                            "toolCallId": {
+                                              "type": "string"
+                                            },
+                                            "title": {
+                                              "type": "string"
+                                            },
+                                            "toolMetadata": {
+                                              "type": "object",
+                                              "additionalProperties": {
+                                                "$ref": "#/components/schemas/RecursiveType"
+                                              }
+                                            },
+                                            "providerExecuted": {
+                                              "type": "boolean"
+                                            },
+                                            "state": {
+                                              "type": "string",
+                                              "const": "output-denied"
+                                            },
+                                            "input": {},
+                                            "output": {},
+                                            "errorText": {},
+                                            "callProviderMetadata": {
+                                              "type": "object",
+                                              "additionalProperties": {
+                                                "type": "object",
+                                                "additionalProperties": {
+                                                  "$ref": "#/components/schemas/RecursiveType"
+                                                }
+                                              }
+                                            },
+                                            "approval": {
+                                              "type": "object",
+                                              "properties": {
+                                                "id": {
+                                                  "type": "string"
+                                                },
+                                                "approved": {
+                                                  "type": "boolean",
+                                                  "const": false
+                                                },
+                                                "descriptor": {},
+                                                "requestReason": {
+                                                  "type": "string"
+                                                },
+                                                "reason": {
+                                                  "type": "string"
+                                                },
+                                                "isAutomatic": {
+                                                  "type": "boolean"
+                                                },
+                                                "signature": {
+                                                  "type": "string"
+                                                },
+                                                "inputSchemaInput": {}
+                                              },
+                                              "required": [
+                                                "id",
+                                                "approved"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          },
+                                          "required": [
+                                            "type",
+                                            "toolName",
+                                            "toolCallId",
+                                            "state",
+                                            "input",
+                                            "approval"
+                                          ],
+                                          "additionalProperties": false
+                                        },
+                                        {
+                                          "$ref": "#/components/schemas/SourceUrlUIPart"
+                                        },
+                                        {
+                                          "$ref": "#/components/schemas/SourceDocumentUIPart"
+                                        },
+                                        {
+                                          "$ref": "#/components/schemas/FileUIPart"
+                                        },
+                                        {
+                                          "$ref": "#/components/schemas/ReasoningFileUIPart"
+                                        },
+                                        {
+                                          "$ref": "#/components/schemas/SteeringMessageUIPart"
+                                        },
+                                        {
+                                          "$ref": "#/components/schemas/StepStartUIPart"
+                                        },
+                                        {
+                                          "type": "object",
+                                          "properties": {
+                                            "type": {},
+                                            "toolCallId": {
+                                              "type": "string"
+                                            },
+                                            "title": {
+                                              "type": "string"
+                                            },
+                                            "toolMetadata": {
+                                              "type": "object",
+                                              "additionalProperties": {
+                                                "$ref": "#/components/schemas/RecursiveType"
+                                              }
+                                            },
+                                            "providerExecuted": {
+                                              "type": "boolean"
+                                            },
+                                            "state": {
+                                              "type": "string",
+                                              "const": "input-streaming"
+                                            },
+                                            "input": {},
+                                            "rawInput": {
+                                              "type": "string"
+                                            },
+                                            "inputEncoding": {
+                                              "type": "string",
+                                              "enum": [
+                                                "text",
+                                                "json"
+                                              ]
+                                            },
+                                            "output": {},
+                                            "errorText": {},
+                                            "callProviderMetadata": {
+                                              "type": "object",
+                                              "additionalProperties": {
+                                                "type": "object",
+                                                "additionalProperties": {
+                                                  "$ref": "#/components/schemas/RecursiveType"
+                                                }
+                                              }
+                                            },
+                                            "approval": {}
+                                          },
+                                          "required": [
+                                            "type",
+                                            "toolCallId",
+                                            "state"
+                                          ],
+                                          "additionalProperties": false
+                                        },
+                                        {
+                                          "type": "object",
+                                          "properties": {
+                                            "type": {},
+                                            "toolCallId": {
+                                              "type": "string"
+                                            },
+                                            "title": {
+                                              "type": "string"
+                                            },
+                                            "toolMetadata": {
+                                              "type": "object",
+                                              "additionalProperties": {
+                                                "$ref": "#/components/schemas/RecursiveType"
+                                              }
+                                            },
+                                            "providerExecuted": {
+                                              "type": "boolean"
+                                            },
+                                            "state": {
+                                              "type": "string",
+                                              "const": "input-available"
+                                            },
+                                            "input": {},
+                                            "output": {},
+                                            "errorText": {},
+                                            "callProviderMetadata": {
+                                              "type": "object",
+                                              "additionalProperties": {
+                                                "type": "object",
+                                                "additionalProperties": {
+                                                  "$ref": "#/components/schemas/RecursiveType"
+                                                }
+                                              }
+                                            },
+                                            "approval": {}
+                                          },
+                                          "required": [
+                                            "type",
+                                            "toolCallId",
+                                            "state",
+                                            "input"
+                                          ],
+                                          "additionalProperties": false
+                                        },
+                                        {
+                                          "type": "object",
+                                          "properties": {
+                                            "type": {},
+                                            "toolCallId": {
+                                              "type": "string"
+                                            },
+                                            "title": {
+                                              "type": "string"
+                                            },
+                                            "toolMetadata": {
+                                              "type": "object",
+                                              "additionalProperties": {
+                                                "$ref": "#/components/schemas/RecursiveType"
+                                              }
+                                            },
+                                            "providerExecuted": {
+                                              "type": "boolean"
+                                            },
+                                            "state": {
+                                              "type": "string",
+                                              "const": "approval-requested"
+                                            },
+                                            "input": {},
+                                            "output": {},
+                                            "errorText": {},
+                                            "callProviderMetadata": {
+                                              "type": "object",
+                                              "additionalProperties": {
+                                                "type": "object",
+                                                "additionalProperties": {
+                                                  "$ref": "#/components/schemas/RecursiveType"
+                                                }
+                                              }
+                                            },
+                                            "approval": {
+                                              "type": "object",
+                                              "properties": {
+                                                "id": {
+                                                  "type": "string"
+                                                },
+                                                "approved": {},
+                                                "descriptor": {},
+                                                "requestReason": {
+                                                  "type": "string"
+                                                },
+                                                "reason": {},
+                                                "isAutomatic": {
+                                                  "type": "boolean"
+                                                },
+                                                "signature": {
+                                                  "type": "string"
+                                                },
+                                                "inputSchemaInput": {}
+                                              },
+                                              "required": [
+                                                "id"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          },
+                                          "required": [
+                                            "type",
+                                            "toolCallId",
+                                            "state",
+                                            "input",
+                                            "approval"
+                                          ],
+                                          "additionalProperties": false
+                                        },
+                                        {
+                                          "type": "object",
+                                          "properties": {
+                                            "type": {},
+                                            "toolCallId": {
+                                              "type": "string"
+                                            },
+                                            "title": {
+                                              "type": "string"
+                                            },
+                                            "toolMetadata": {
+                                              "type": "object",
+                                              "additionalProperties": {
+                                                "$ref": "#/components/schemas/RecursiveType"
+                                              }
+                                            },
+                                            "providerExecuted": {
+                                              "type": "boolean"
+                                            },
+                                            "state": {
+                                              "type": "string",
+                                              "const": "approval-responded"
+                                            },
+                                            "input": {},
+                                            "output": {},
+                                            "errorText": {},
+                                            "callProviderMetadata": {
+                                              "type": "object",
+                                              "additionalProperties": {
+                                                "type": "object",
+                                                "additionalProperties": {
+                                                  "$ref": "#/components/schemas/RecursiveType"
+                                                }
+                                              }
+                                            },
+                                            "approval": {
+                                              "type": "object",
+                                              "properties": {
+                                                "id": {
+                                                  "type": "string"
+                                                },
+                                                "approved": {
+                                                  "type": "boolean"
+                                                },
+                                                "descriptor": {},
+                                                "requestReason": {
+                                                  "type": "string"
+                                                },
+                                                "reason": {
+                                                  "type": "string"
+                                                },
+                                                "isAutomatic": {
+                                                  "type": "boolean"
+                                                },
+                                                "signature": {
+                                                  "type": "string"
+                                                },
+                                                "inputSchemaInput": {}
+                                              },
+                                              "required": [
+                                                "id",
+                                                "approved"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          },
+                                          "required": [
+                                            "type",
+                                            "toolCallId",
+                                            "state",
+                                            "input",
+                                            "approval"
+                                          ],
+                                          "additionalProperties": false
+                                        },
+                                        {
+                                          "type": "object",
+                                          "properties": {
+                                            "type": {},
+                                            "toolCallId": {
+                                              "type": "string"
+                                            },
+                                            "title": {
+                                              "type": "string"
+                                            },
+                                            "toolMetadata": {
+                                              "type": "object",
+                                              "additionalProperties": {
+                                                "$ref": "#/components/schemas/RecursiveType"
+                                              }
+                                            },
+                                            "providerExecuted": {
+                                              "type": "boolean"
+                                            },
+                                            "state": {
+                                              "type": "string",
+                                              "const": "output-available"
+                                            },
+                                            "input": {},
+                                            "output": {},
+                                            "errorText": {},
+                                            "callProviderMetadata": {
+                                              "type": "object",
+                                              "additionalProperties": {
+                                                "type": "object",
+                                                "additionalProperties": {
+                                                  "$ref": "#/components/schemas/RecursiveType"
+                                                }
+                                              }
+                                            },
+                                            "resultProviderMetadata": {
+                                              "type": "object",
+                                              "additionalProperties": {
+                                                "type": "object",
+                                                "additionalProperties": {
+                                                  "$ref": "#/components/schemas/RecursiveType"
+                                                }
+                                              }
+                                            },
+                                            "preliminary": {
+                                              "type": "boolean"
+                                            },
+                                            "approval": {
+                                              "type": "object",
+                                              "properties": {
+                                                "id": {
+                                                  "type": "string"
+                                                },
+                                                "approved": {
+                                                  "type": "boolean",
+                                                  "const": true
+                                                },
+                                                "descriptor": {},
+                                                "requestReason": {
+                                                  "type": "string"
+                                                },
+                                                "reason": {
+                                                  "type": "string"
+                                                },
+                                                "isAutomatic": {
+                                                  "type": "boolean"
+                                                },
+                                                "signature": {
+                                                  "type": "string"
+                                                },
+                                                "inputSchemaInput": {}
+                                              },
+                                              "required": [
+                                                "id",
+                                                "approved"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          },
+                                          "required": [
+                                            "type",
+                                            "toolCallId",
+                                            "state",
+                                            "input",
+                                            "output"
+                                          ],
+                                          "additionalProperties": false
+                                        },
+                                        {
+                                          "type": "object",
+                                          "properties": {
+                                            "type": {},
+                                            "toolCallId": {
+                                              "type": "string"
+                                            },
+                                            "title": {
+                                              "type": "string"
+                                            },
+                                            "toolMetadata": {
+                                              "type": "object",
+                                              "additionalProperties": {
+                                                "$ref": "#/components/schemas/RecursiveType"
+                                              }
+                                            },
+                                            "providerExecuted": {
+                                              "type": "boolean"
+                                            },
+                                            "state": {
+                                              "type": "string",
+                                              "const": "output-error"
+                                            },
+                                            "input": {},
+                                            "rawInput": {},
+                                            "output": {},
+                                            "errorText": {
+                                              "type": "string"
+                                            },
+                                            "callProviderMetadata": {
+                                              "type": "object",
+                                              "additionalProperties": {
+                                                "type": "object",
+                                                "additionalProperties": {
+                                                  "$ref": "#/components/schemas/RecursiveType"
+                                                }
+                                              }
+                                            },
+                                            "resultProviderMetadata": {
+                                              "type": "object",
+                                              "additionalProperties": {
+                                                "type": "object",
+                                                "additionalProperties": {
+                                                  "$ref": "#/components/schemas/RecursiveType"
+                                                }
+                                              }
+                                            },
+                                            "approval": {
+                                              "type": "object",
+                                              "properties": {
+                                                "id": {
+                                                  "type": "string"
+                                                },
+                                                "approved": {
+                                                  "type": "boolean",
+                                                  "const": true
+                                                },
+                                                "descriptor": {},
+                                                "requestReason": {
+                                                  "type": "string"
+                                                },
+                                                "reason": {
+                                                  "type": "string"
+                                                },
+                                                "isAutomatic": {
+                                                  "type": "boolean"
+                                                },
+                                                "signature": {
+                                                  "type": "string"
+                                                },
+                                                "inputSchemaInput": {}
+                                              },
+                                              "required": [
+                                                "id",
+                                                "approved"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          },
+                                          "required": [
+                                            "type",
+                                            "toolCallId",
+                                            "state",
+                                            "input",
+                                            "errorText"
+                                          ],
+                                          "additionalProperties": false
+                                        },
+                                        {
+                                          "type": "object",
+                                          "properties": {
+                                            "type": {},
+                                            "toolCallId": {
+                                              "type": "string"
+                                            },
+                                            "title": {
+                                              "type": "string"
+                                            },
+                                            "toolMetadata": {
+                                              "type": "object",
+                                              "additionalProperties": {
+                                                "$ref": "#/components/schemas/RecursiveType"
+                                              }
+                                            },
+                                            "providerExecuted": {
+                                              "type": "boolean"
+                                            },
+                                            "state": {
+                                              "type": "string",
+                                              "const": "output-denied"
+                                            },
+                                            "input": {},
+                                            "output": {},
+                                            "errorText": {},
+                                            "callProviderMetadata": {
+                                              "type": "object",
+                                              "additionalProperties": {
+                                                "type": "object",
+                                                "additionalProperties": {
+                                                  "$ref": "#/components/schemas/RecursiveType"
+                                                }
+                                              }
+                                            },
+                                            "approval": {
+                                              "type": "object",
+                                              "properties": {
+                                                "id": {
+                                                  "type": "string"
+                                                },
+                                                "approved": {
+                                                  "type": "boolean",
+                                                  "const": false
+                                                },
+                                                "descriptor": {},
+                                                "requestReason": {
+                                                  "type": "string"
+                                                },
+                                                "reason": {
+                                                  "type": "string"
+                                                },
+                                                "isAutomatic": {
+                                                  "type": "boolean"
+                                                },
+                                                "signature": {
+                                                  "type": "string"
+                                                },
+                                                "inputSchemaInput": {}
+                                              },
+                                              "required": [
+                                                "id",
+                                                "approved"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          },
+                                          "required": [
+                                            "type",
+                                            "toolCallId",
+                                            "state",
+                                            "input",
+                                            "approval"
+                                          ],
+                                          "additionalProperties": false
+                                        },
+                                        {
+                                          "type": "object",
+                                          "properties": {
+                                            "type": {},
+                                            "id": {
+                                              "type": "string"
+                                            },
+                                            "data": {}
+                                          },
+                                          "required": [
+                                            "type",
+                                            "data"
+                                          ],
+                                          "additionalProperties": false
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "sortOrder": {
+                                    "type": "number"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "createdAt",
+                                  "chatId",
+                                  "role",
+                                  "parts",
+                                  "sortOrder"
+                                ],
+                                "additionalProperties": false
+                              }
+                            },
+                            "dataset": {
+                              "oneOf": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "id": {
+                                      "type": "string"
+                                    },
+                                    "name": {
+                                      "type": "string"
+                                    },
+                                    "mimeType": {
+                                      "type": "string"
+                                    },
+                                    "sizeBytes": {
+                                      "type": "number"
+                                    },
+                                    "rowCount": {
+                                      "type": "number"
+                                    },
+                                    "columns": {
+                                      "type": "array",
+                                      "items": {
+                                        "$ref": "#/components/schemas/ColumnProfile"
+                                      }
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "name",
+                                    "mimeType",
+                                    "sizeBytes",
+                                    "rowCount",
+                                    "columns"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "createdAt",
+                            "title",
+                            "datasetId",
+                            "updatedAt",
+                            "messages",
+                            "dataset"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "result"
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "style": "deepObject",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "/chats.rename": {
+      "post": {
+        "operationId": "chats.rename",
+        "tags": [
+          "chats"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "title": {
+                              "type": "string"
+                            },
+                            "datasetId": {
+                              "type": "string"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "title",
+                            "datasetId",
+                            "createdAt",
+                            "updatedAt"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "result"
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "title"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chats.remove": {
+      "post": {
+        "operationId": "chats.remove",
+        "tags": [
+          "chats"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "datasetId": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "datasetId"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "result"
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "/datasets.create": {
+      "post": {
+        "operationId": "datasets.create",
+        "tags": [
+          "datasets"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "chatId": {
+                              "type": "string"
+                            },
+                            "datasetId": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "chatId",
+                            "datasetId"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "result"
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "filename": {
+                    "type": "string"
+                  },
+                  "mimeType": {
+                    "type": "string"
+                  },
+                  "sizeBytes": {
+                    "type": "number"
+                  },
+                  "data": {
+                    "type": "string",
+                    "description": "Raw base64 (no `data:` prefix)."
+                  }
+                },
+                "required": [
+                  "filename",
+                  "mimeType",
+                  "sizeBytes",
+                  "data"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "TextUIPart": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "text"
+          },
+          "citations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LanguageModelV4Citation"
+            }
+          },
+          "text": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "streaming",
+              "done"
+            ]
+          },
+          "providerMetadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/components/schemas/RecursiveType"
+              }
+            }
+          }
+        },
+        "required": [
+          "type",
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      "LanguageModelV4Citation": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "source"
+                  },
+                  "sourceType": {
+                    "type": "string",
+                    "const": "url"
+                  },
+                  "id": {
+                    "type": "string"
+                  },
+                  "url": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "providerMetadata": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "$ref": "#/components/schemas/RecursiveType"
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "type",
+                  "sourceType",
+                  "id",
+                  "url"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "source"
+                  },
+                  "sourceType": {
+                    "type": "string",
+                    "const": "document"
+                  },
+                  "id": {
+                    "type": "string"
+                  },
+                  "mediaType": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "filename": {
+                    "type": "string"
+                  },
+                  "providerMetadata": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "$ref": "#/components/schemas/RecursiveType"
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "type",
+                  "sourceType",
+                  "id",
+                  "mediaType",
+                  "title"
+                ],
+                "additionalProperties": false
+              }
+            ],
+            "discriminator": {
+              "propertyName": "type"
+            }
+          },
+          "startIndex": {
+            "type": "number"
+          },
+          "endIndex": {
+            "type": "number"
+          },
+          "citedText": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "source"
+        ],
+        "additionalProperties": false
+      },
+      "RecursiveType": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/RecursiveType"
+            }
+          },
+          {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JSONValue"
+            }
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "JSONValue": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/RecursiveType"
+            }
+          },
+          {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JSONValue"
+            }
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "CustomContentUIPart": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "custom"
+          },
+          "kind": {},
+          "providerMetadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/components/schemas/RecursiveType"
+              }
+            }
+          }
+        },
+        "required": [
+          "type",
+          "kind"
+        ],
+        "additionalProperties": false
+      },
+      "ReasoningUIPart": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "reasoning"
+          },
+          "id": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "streaming",
+              "done"
+            ]
+          },
+          "providerMetadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/components/schemas/RecursiveType"
+              }
+            }
+          }
+        },
+        "required": [
+          "type",
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      "SourceUrlUIPart": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "source-url"
+          },
+          "sourceId": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "providerMetadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/components/schemas/RecursiveType"
+              }
+            }
+          }
+        },
+        "required": [
+          "type",
+          "sourceId",
+          "url"
+        ],
+        "additionalProperties": false
+      },
+      "SourceDocumentUIPart": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "source-document"
+          },
+          "sourceId": {
+            "type": "string"
+          },
+          "mediaType": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "filename": {
+            "type": "string"
+          },
+          "providerMetadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/components/schemas/RecursiveType"
+              }
+            }
+          }
+        },
+        "required": [
+          "type",
+          "sourceId",
+          "mediaType",
+          "title"
+        ],
+        "additionalProperties": false
+      },
+      "FileUIPart": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "file"
+          },
+          "mediaType": {
+            "type": "string"
+          },
+          "filename": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "providerReference": {
+            "type": "object",
+            "properties": {
+              "type": {}
+            },
+            "additionalProperties": false
+          },
+          "providerMetadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/components/schemas/RecursiveType"
+              }
+            }
+          }
+        },
+        "required": [
+          "type",
+          "mediaType",
+          "url"
+        ],
+        "additionalProperties": false
+      },
+      "ReasoningFileUIPart": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "reasoning-file"
+          },
+          "mediaType": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "providerMetadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/components/schemas/RecursiveType"
+              }
+            }
+          }
+        },
+        "required": [
+          "type",
+          "mediaType",
+          "url"
+        ],
+        "additionalProperties": false
+      },
+      "SteeringMessageUIPart": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "steering-message"
+          },
+          "id": {
+            "type": "string"
+          },
+          "parts": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/TextUIPart"
+                },
+                {
+                  "$ref": "#/components/schemas/FileUIPart"
+                }
+              ]
+            }
+          }
+        },
+        "required": [
+          "type",
+          "id",
+          "parts"
+        ],
+        "additionalProperties": false
+      },
+      "StepStartUIPart": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "step-start"
+          }
+        },
+        "required": [
+          "type"
+        ],
+        "additionalProperties": false
+      },
+      "ColumnProfile": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "string",
+              "number",
+              "boolean",
+              "date"
+            ]
+          },
+          "nullCount": {
+            "type": "number"
+          },
+          "uniqueCount": {
+            "type": "number"
+          },
+          "min": {
+            "type": [
+              "string",
+              "number"
+            ],
+            "description": "Numeric/date summary, only for number and date columns."
+          },
+          "max": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "mean": {
+            "type": "number"
+          },
+          "topValues": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Top 5 values for string/boolean columns."
+          },
+          "sampleValues": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Up to 3 non-null values, for display in prompts and the dataset chip."
+          },
+          "unit": {
+            "type": "string",
+            "description": "Detected display unit, e.g. \"$\", \"EUR\", \"%\", when every sampled value carried it."
+          }
+        },
+        "required": [
+          "name",
+          "type",
+          "nullCount",
+          "uniqueCount",
+          "sampleValues"
+        ],
+        "additionalProperties": false
+      },
+      "DefaultErrorShape": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "code": {
+            "type": "number",
+            "enum": [
+              -32700,
+              -32600,
+              -32603,
+              -32001,
+              -32002,
+              -32003,
+              -32004,
+              -32005,
+              -32008,
+              -32009,
+              -32012,
+              -32013,
+              -32015,
+              -32022,
+              -32028,
+              -32029,
+              -32099
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/DefaultErrorData"
+          }
+        },
+        "required": [
+          "message",
+          "code",
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "DefaultErrorData": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": [
+              "PARSE_ERROR",
+              "BAD_REQUEST",
+              "INTERNAL_SERVER_ERROR",
+              "NOT_IMPLEMENTED",
+              "BAD_GATEWAY",
+              "SERVICE_UNAVAILABLE",
+              "GATEWAY_TIMEOUT",
+              "UNAUTHORIZED",
+              "PAYMENT_REQUIRED",
+              "FORBIDDEN",
+              "NOT_FOUND",
+              "METHOD_NOT_SUPPORTED",
+              "TIMEOUT",
+              "CONFLICT",
+              "PRECONDITION_FAILED",
+              "PAYLOAD_TOO_LARGE",
+              "UNSUPPORTED_MEDIA_TYPE",
+              "UNPROCESSABLE_CONTENT",
+              "PRECONDITION_REQUIRED",
+              "TOO_MANY_REQUESTS",
+              "CLIENT_CLOSED_REQUEST"
+            ]
+          },
+          "httpStatus": {
+            "type": "number"
+          },
+          "path": {
+            "type": "string"
+          },
+          "stack": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "httpStatus"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "responses": {
+      "Error": {
+        "description": "Error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "$ref": "#/components/schemas/DefaultErrorShape"
+                }
+              },
+              "required": [
+                "error"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}
