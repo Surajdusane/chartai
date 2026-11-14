@@ -44,9 +44,6 @@ export function ChatItem({ chat, isActive }: ChatItemProps) {
         tooltip={chat.title}
       >
         <span className="truncate">{chat.title}</span>
-        <span className="text-muted-foreground text-xs group-data-[collapsible=icon]:hidden">
-          {chat.dataset?.name ?? "Unknown dataset"}
-        </span>
       </SidebarMenuButton>
       <Menu>
         <MenuTrigger render={<SidebarMenuAction showOnHover />}>

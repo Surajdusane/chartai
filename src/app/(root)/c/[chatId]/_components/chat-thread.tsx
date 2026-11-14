@@ -2,10 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-import { useChatSession } from "@/features/assistant";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { SidebarTrigger } from "@/components/ui/sidebar";
+import { useChatSession } from "@/features/assistant";
 import { ChatComposer } from "@/features/chats/components/composer";
 import { FollowUpChips } from "@/features/chats/components/follow-up-chips";
 import { MessageList } from "@/features/chats/components/message-list";
@@ -77,7 +76,6 @@ export function ChatThread({ chatId }: { chatId: string }) {
   return (
     <div className="flex h-full min-h-0 flex-col">
       <header className="flex h-13 shrink-0 items-center gap-2 border-b px-2 sm:h-14 sm:px-3">
-        <SidebarTrigger />
         <div className="flex min-w-0 flex-1 items-center gap-2">
           <span className="truncate text-sm font-medium">{chat.title}</span>
           <Badge variant="secondary" className="hidden max-w-40 shrink-0 truncate md:inline-flex">

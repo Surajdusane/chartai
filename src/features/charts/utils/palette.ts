@@ -1,13 +1,13 @@
 ﻿import type { ChartConfig } from "@/components/evilcharts/charts/echarts-bar-chart";
 
 export const CHART_PALETTE: ReadonlyArray<NonNullable<ChartConfig[string]["colors"]>> = [
-  { light: ["#2563eb"], dark: ["#60a5fa"] },
-  { light: ["#0d9488"], dark: ["#2dd4bf"] },
-  { light: ["#d97706"], dark: ["#fbbf24"] },
-  { light: ["#7c3aed"], dark: ["#a78bfa"] },
-  { light: ["#e11d48"], dark: ["#fb7185"] },
-  { light: ["#0891b2"], dark: ["#22d3ee"] },
-  { light: ["#65a30d"], dark: ["#a3e635"] },
-  { light: ["#ea580c"], dark: ["#fb923c"] },
-  { light: ["#475569"], dark: ["#94a3b8"] },
+  { light: ["#B7CDF2"], dark: ["#F2F0E9"] },
+  { light: ["#B5DCD3"], dark: ["#91D5C5"] },
+  { light: ["#F0D5AA"], dark: ["#F2C987"] },
+  { light: ["#D1BDEB"], dark: ["#C5A7F0"] },
+  { light: ["#EDC1CB"], dark: ["#F0A9BA"] },
+  { light: ["#B8DCE8"], dark: ["#91D5E8"] },
+  { light: ["#CCDEB2"], dark: ["#B9D98F"] },
+  { light: ["#F0CBB4"], dark: ["#F2B995"] },
+  { light: ["#C9CED8"], dark: ["#B9C3D6"] },
 ];

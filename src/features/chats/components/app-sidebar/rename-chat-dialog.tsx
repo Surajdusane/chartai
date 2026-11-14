@@ -60,7 +60,7 @@ export function RenameChatDialog({ chat, open, onOpenChange }: RenameChatDialogP
             <DialogTitle>Rename chat</DialogTitle>
             <DialogDescription>Enter a new name for this chat.</DialogDescription>
           </DialogHeader>
-          <div className="px-6">
+          <div className="px-6 pb-6">
             <Input
               value={title}
               onChange={(e) => setTitle(e.target.value)}

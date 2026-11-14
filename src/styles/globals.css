@@ -297,3 +297,14 @@
   scrollbar-width: thin;
   scrollbar-color: var(--border) transparent;
 }
+
+/* Sidebar polish — subtle vertical gradient gives the panel a soft
+   lift off the page without adding hard borders or noise. */
+[data-slot="sidebar-inner"] {
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--sidebar-accent) 70%, transparent) 0%,
+    transparent 22%
+  );
+}
+

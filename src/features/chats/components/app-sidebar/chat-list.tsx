@@ -1,6 +1,11 @@
 "use client";
 
-import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu } from "@/components/ui/sidebar";
+import {
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarMenu,
+} from "@/components/ui/sidebar";
 import type { ChatGroup } from "@/features/chats/utils/group-chats-by-date";
 
 import { ChatItem } from "./chat-item";
@@ -15,7 +20,7 @@ export function ChatList(props: { groups: ChatGroup[]; activeChatId?: string }) 
   }
 
   return (
-    <>
+    <div className="flex flex-col">
       {props.groups.map((group) => (
         <SidebarGroup key={group.label}>
           <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
@@ -28,6 +33,6 @@ export function ChatList(props: { groups: ChatGroup[]; activeChatId?: string }) 
           </SidebarGroupContent>
         </SidebarGroup>
       ))}
-    </>
+    </div>
   );
 }

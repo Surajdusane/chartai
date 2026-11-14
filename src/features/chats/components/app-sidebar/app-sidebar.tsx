@@ -9,11 +9,11 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
   SidebarSeparator,
+  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { useGetChats } from "@/features/chats/hooks";
 import { groupChatsByDate } from "@/features/chats/utils/group-chats-by-date";
@@ -29,28 +29,40 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon" variant="sidebar">
       <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton size="lg" render={<Link href="/" />} tooltip="Chart AI">
-              <div className="bg-primary text-primary-foreground flex size-8 items-center justify-center rounded-lg text-sm font-semibold">
-                C
-              </div>
-              <span className="truncate font-semibold">Chart AI</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton isActive={pathname === "/"} render={<Link href="/" />} tooltip="New chat">
-              <PlusIcon />
-              <span>New chat</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <div className="flex items-center justify-between gap-1">
+          <SidebarMenuButton
+            size="lg"
+            render={<Link href="/" />}
+            tooltip="Chart AI"
+            className="group-data-[collapsible=icon]:hidden"
+          >
+            <div className="flex size-8 items-center justify-center rounded-lg border border-sidebar-border bg-sidebar text-xs font-semibold tracking-tight">
+              C
+            </div>
+            <span className="truncate font-semibold tracking-tight">Chart AI</span>
+          </SidebarMenuButton>
+          <SidebarTrigger className="size-7" />
+        </div>
+        <SidebarMenuItem>
+          <SidebarMenuButton
+            isActive={pathname === "/"}
+            render={<Link href="/" />}
+            tooltip="New chat"
+            variant="outline"
+            className="group-data-[collapsible=icon]:hidden"
+          >
+            <PlusIcon />
+            <span>New chat</span>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
       </SidebarHeader>
 
-      <SidebarSeparator />
+      <SidebarSeparator className="mx-0 group-data-[collapsible=icon]:hidden" />
 
       <SidebarContent>
-        <ChatList groups={groups} activeChatId={pathname.startsWith("/c/") ? pathname.split("/")[2] : undefined} />
+        <div className="group-data-[collapsible=icon]:hidden">
+          <ChatList groups={groups} activeChatId={pathname.startsWith("/c/") ? pathname.split("/")[2] : undefined} />
+        </div>
       </SidebarContent>
 
       <SidebarFooter>
@@ -58,7 +70,9 @@ export function AppSidebar() {
           <span className="text-muted-foreground truncate text-xs group-data-[collapsible=icon]:hidden">
             {chats.length} {chats.length === 1 ? "chat" : "chats"}
           </span>
-          <ThemeToggle />
+          <div className="group-data-[collapsible=icon]:hidden">
+            <ThemeToggle />
+          </div>
         </div>
       </SidebarFooter>
 
