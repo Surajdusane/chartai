@@ -9,7 +9,9 @@ export const useStickToBottom = (contentKey: string) => {
   const [isPinned, setIsPinned] = useState(true);
   const pinnedRef = useRef(true);
 
-  const scrollToBottom = useCallback((behavior: ScrollBehavior = "smooth") => {
+  const scrollToBottom = useCallback((arg?: ScrollBehavior | unknown) => {
+    const behavior: ScrollBehavior =
+      arg === "auto" || arg === "instant" || arg === "smooth" ? arg : "smooth";
     const element = containerRef.current;
     if (!element) return;
     element.scrollTo({ top: element.scrollHeight, behavior });

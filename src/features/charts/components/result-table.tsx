@@ -15,8 +15,8 @@ const formatCell = (value: string | number | null) => {
   if (value === null) return "—";
   if (typeof value === "number") {
     return Number.isInteger(value)
-      ? value.toLocaleString()
-      : value.toLocaleString(undefined, { maximumFractionDigits: 2 });
+      ? value.toLocaleString("en-US")
+      : value.toLocaleString("en-US", { maximumFractionDigits: 2 });
   }
   return value;
 };

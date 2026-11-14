@@ -44,9 +44,9 @@ export async function POST(request: Request) {
     return Response.json({ error: "Invalid request body." }, { status: 400 });
   }
 
-  if (!process.env.OPENROUTER_API_KEY || !process.env.OPENROUTER_MODEL) {
+  if (!process.env.GROQ_API_KEY || !(process.env.GROQ_MODEL ?? process.env.GROQ_MODLE)) {
     return Response.json(
-      { error: "The assistant is not configured. Set OPENROUTER_API_KEY and OPENROUTER_MODEL." },
+      { error: "The assistant is not configured. Set GROQ_API_KEY and GROQ_MODEL." },
       { status: 500 },
     );
   }
@@ -79,7 +79,7 @@ export async function POST(request: Request) {
       ignoreIncompleteToolCalls: true,
     }),
     tools,
-    stopWhen: isStepCount(3),
+    stopWhen: isStepCount(5),
     abortSignal: request.signal,
   });
 
