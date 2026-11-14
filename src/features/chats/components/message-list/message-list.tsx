@@ -32,13 +32,15 @@ export function MessageList(props: {
 
   return (
     <div className="relative min-h-0 flex-1">
-      <div
-        ref={containerRef}
-        className="h-full overflow-y-auto overscroll-contain"
-        role="log"
-        aria-live="polite"
-        aria-label="Conversation"
-      >
+        <div
+          ref={containerRef}
+          className="h-full overflow-y-auto overscroll-contain"
+          role="log"
+          aria-live="polite"
+          aria-relevant="additions text"
+          aria-busy={props.isStreaming}
+          aria-label="Conversation"
+        >
         <div
           ref={contentRef}
           className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-3 py-6 sm:gap-8 sm:px-4 sm:py-8"

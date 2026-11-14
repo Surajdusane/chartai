@@ -38,7 +38,7 @@ export function ChatComposer(props: {
       submitDisabled={props.disabled}
       className="bg-background"
     >
-      <ComposerInput placeholder={props.placeholder ?? "Ask about your data…"} />
+      <ComposerInput placeholder={props.placeholder ?? "Ask about your data…"} aria-label="Message" />
       <ComposerActions>
         <ComposerActionGroup />
         <ComposerActionGroup align="end">
