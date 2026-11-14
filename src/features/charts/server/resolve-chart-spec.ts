@@ -14,6 +14,7 @@ const DEFAULT_LIMIT: Record<ChartType, number> = {
   radial: 10,
   radar: 12,
   composed: 12,
+  heatmap: 12,
 };
 
 const toCategory = (value: DatasetValue): string => {

@@ -8,6 +8,7 @@ export const chartTypeSchema = z.enum([
   "radial",
   "radar",
   "composed",
+  "heatmap",
 ]);
 
 export const chartAggregationSchema = z.enum(["sum", "avg", "count", "min", "max", "none"]);

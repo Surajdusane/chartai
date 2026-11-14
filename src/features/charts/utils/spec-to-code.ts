@@ -10,6 +10,7 @@ const IMPORTS: Record<ChartPayload["type"], { component: string; module: string 
   radial: { component: "EChartsRadialChart", module: "echarts-radial-chart" },
   radar: { component: "EChartsRadarChart", module: "echarts-radar-chart" },
   composed: { component: "EChartsComposedChart", module: "echarts-composed-chart" },
+  heatmap: { component: "EChartsHeatmapChart", module: "echarts-heatmap-chart" },
 };
 
 const previewRows = (payload: ChartPayload) => JSON.stringify(payload.rows.slice(0, 3), null, 2);
@@ -57,6 +58,17 @@ const children = (payload: ChartPayload) => {
     ].join("\n");
   }
 
+  if (payload.type === "heatmap") {
+    const seriesKey = payload.series[0]?.key ?? "value";
+    return [
+      `    <${root}.Cell dataKey="${seriesKey}" radius={2} gap={3} isClickable />`,
+      `    <${root}.MonthLabel />`,
+      `    <${root}.DayLabel />`,
+      `    <${root}.Tooltip />`,
+      `    <${root}.Legend lessLabel="Less" moreLabel="More" />`,
+    ].join("\n");
+  }
+
   const seriesTag = payload.type === "line" ? "Line" : payload.type === "area" ? "Area" : "Bar";
   const seriesProps =
     payload.type === "line" ? ` strokeWidth={2}` : payload.type === "area" ? ` variant="gradient" strokeWidth={2}` : ` radius={4}`;
@@ -85,6 +97,8 @@ export const specToCode = (spec: ChartSpec, payload: ChartPayload) => {
       case "radial":
         return `nameKey="name" innerRadius="35%" outerRadius="95%"`;
       case "radar":
+        return "";
+      case "heatmap":
         return "";
       default:
         return `xDataKey="category"`;

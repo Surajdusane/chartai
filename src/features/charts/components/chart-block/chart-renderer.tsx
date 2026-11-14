@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import { EChartsAreaChart } from "@/components/evilcharts/charts/echarts-area-chart";
 import { EChartsBarChart } from "@/components/evilcharts/charts/echarts-bar-chart";
 import { EChartsComposedChart } from "@/components/evilcharts/charts/echarts-composed-chart";
+import { EChartsHeatmapChart } from "@/components/evilcharts/charts/echarts-heatmap-chart";
 import { EChartsLineChart } from "@/components/evilcharts/charts/echarts-line-chart";
 import { EChartsPieChart } from "@/components/evilcharts/charts/echarts-pie-chart";
 import { EChartsRadarChart } from "@/components/evilcharts/charts/echarts-radar-chart";
@@ -17,6 +18,7 @@ export function ChartRenderer({ payload }: { payload: ChartPayload }) {
   const config = useMemo(() => toChartConfig(payload), [payload]);
   const reduceMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
   const animation = !reduceMotion;
+  const hasManySeries = payload.series.length > 1;
 
   if (payload.type === "pie") {
     return (
@@ -55,7 +57,33 @@ export function ChartRenderer({ payload }: { payload: ChartPayload }) {
     );
   }
 
-  const hasManySeries = payload.series.length > 1;
+  if (payload.type === "heatmap") {
+    const seriesKey = payload.series[0]?.key ?? "value";
+    const seriesLabel = payload.series[0]?.label ?? seriesKey;
+
+    return (
+      <EChartsHeatmapChart
+        data={payload.rows.map((row) => ({
+          date: String(row[payload.xKey ?? "category"]),
+          value: Number(row[seriesKey]) || 0,
+        }))}
+        config={{
+          [seriesKey]: {
+            label: seriesLabel,
+            colors: { light: ["#e2e8f0", "#94a3b8", "#475569", "#2563eb"], dark: ["#1e293b", "#334155", "#475569", "#60a5fa"] },
+          },
+        }}
+        className="h-full w-full"
+        animation={animation}
+      >
+        <EChartsHeatmapChart.Cell dataKey={seriesKey} radius={2} gap={3} isClickable />
+        <EChartsHeatmapChart.MonthLabel />
+        <EChartsHeatmapChart.DayLabel />
+        <EChartsHeatmapChart.Tooltip />
+        <EChartsHeatmapChart.Legend lessLabel="Less" moreLabel="More" />
+      </EChartsHeatmapChart>
+    );
+  }
 
   if (payload.type === "line") {
     return (
@@ -66,6 +94,7 @@ export function ChartRenderer({ payload }: { payload: ChartPayload }) {
         className="h-full w-full"
         curveType="smooth"
         animation={animation}
+        enableHoverHighlight
       >
         <EChartsLineChart.Grid />
         <EChartsLineChart.XAxis dataKey="category" hideDots />
@@ -73,7 +102,7 @@ export function ChartRenderer({ payload }: { payload: ChartPayload }) {
         <EChartsLineChart.Tooltip />
         {hasManySeries ? <EChartsLineChart.Legend align="center" verticalAlign="bottom" isClickable /> : null}
         {payload.series.map((series) => (
-          <EChartsLineChart.Line key={series.key} dataKey={series.key} strokeWidth={2}>
+          <EChartsLineChart.Line key={series.key} dataKey={series.key} strokeWidth={2} glowing>
             <EChartsLineChart.ActiveDot />
           </EChartsLineChart.Line>
         ))}
@@ -91,6 +120,7 @@ export function ChartRenderer({ payload }: { payload: ChartPayload }) {
         curveType="smooth"
         animation={animation}
         stackType={payload.stacked && payload.series.length > 1 ? "stacked" : "default"}
+        enableHoverHighlight
       >
         <EChartsAreaChart.Grid />
         <EChartsAreaChart.XAxis dataKey="category" hideDots />
@@ -158,7 +188,7 @@ export function ChartRenderer({ payload }: { payload: ChartPayload }) {
       <EChartsBarChart.Tooltip />
       {hasManySeries ? <EChartsBarChart.Legend align="center" verticalAlign="bottom" isClickable /> : null}
       {payload.series.map((series) => (
-        <EChartsBarChart.Bar key={series.key} dataKey={series.key} radius={4} />
+        <EChartsBarChart.Bar key={series.key} dataKey={series.key} variant="gradient" radius={4} glowing />
       ))}
     </EChartsBarChart>
   );
