@@ -1,17 +1,20 @@
-﻿import Link from "next/link";
+﻿import { SidebarTrigger } from "@/components/ui/sidebar";
 
 const page = async ({ params }: PageProps<"/c/[chatId]">) => {
   const { chatId } = await params;
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-4 p-8">
-      <h1 className="text-xl font-semibold">Chat {chatId}</h1>
-      <p className="text-muted-foreground text-sm">The chat UI arrives in step 05.</p>
-      <Link className="text-sm underline underline-offset-4" href="/">
-        Start another chat
-      </Link>
-    </main>
-  );  
+    <div className="flex h-full min-h-0 flex-col">
+      <header className="flex h-14 shrink-0 items-center gap-2 border-b px-3">
+        <SidebarTrigger />
+        <span className="truncate text-sm font-medium">Chat</span>
+        <span className="text-muted-foreground ml-auto text-xs">{chatId.slice(0, 8)}</span>
+      </header>
+      <div className="flex min-h-0 flex-1 items-center justify-center p-6">
+        <p className="text-muted-foreground text-sm">The chat UI arrives in step 05.</p>
+      </div>
+    </div>
+  );
 };
 
 export default page;

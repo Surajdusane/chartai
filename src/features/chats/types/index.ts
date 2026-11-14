@@ -9,7 +9,7 @@ export type ChatListItem = {
     id: string;
     name: string;
     rowCount: number;
-  };
+  } | null;
 };
 
 export type ChatDetail = {
