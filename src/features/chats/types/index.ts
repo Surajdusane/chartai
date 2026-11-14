@@ -1,3 +1,4 @@
+import type { UIMessage } from "ai";
 import type { ColumnProfile } from "@/db/schema";
 
 export type ChatListItem = {
@@ -27,7 +28,9 @@ export type ChatDetail = {
   };
   messages: Array<{
     id: string;
-    role: "system" | "user" | "assistant";
-    parts: unknown[];
+    role: UIMessage["role"];
+    parts: UIMessage["parts"];
   }>;
 };
+
+export type ChatUIMessage = UIMessage;
