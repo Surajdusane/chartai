@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import type { UIMessage } from "ai";
+import { useMemo } from "react";
 
+import { useChatSession } from "@/features/assistant";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { ChatComposer } from "@/features/chats/components/composer";
 import { MessageList } from "@/features/chats/components/message-list";
@@ -14,8 +15,13 @@ import { ChatEmptyState } from "./chat-empty-state";
 
 export function ChatThread({ chatId }: { chatId: string }) {
   const { data: chat } = useGetChat(chatId);
-  const [messages, setMessages] = useState<UIMessage[]>(() => toUiMessages(chat));
-  const [isStreaming, setIsStreaming] = useState(false);
+  const initialMessages = useMemo(() => toUiMessages(chat), [chat]);
+  const { messages, sendMessage, status, stop, regenerate, error, clearError } = useChatSession({
+    chatId,
+    initialMessages,
+  });
+
+  const isStreaming = status === "streaming" || status === "submitted";
 
   if (!chat.dataset) {
     return (
@@ -27,29 +33,9 @@ export function ChatThread({ chatId }: { chatId: string }) {
 
   const dataset = chat.dataset;
 
-  // TEMPORARY — step 07 replaces this with useChat + /api/chat.
   const send = (text: string) => {
-    const userId = crypto.randomUUID();
-    const assistantId = crypto.randomUUID();
-    setMessages((current) => [
-      ...current,
-      { id: userId, role: "user", parts: [{ type: "text", text }] },
-      {
-        id: assistantId,
-        role: "assistant",
-        parts: [
-          { type: "step-start" },
-          {
-            type: "text",
-            text: `**Streaming arrives in step 07.**\n\nYou asked: “${text}”\n\nThis dataset has **${dataset.rowCount.toLocaleString()} rows** and **${dataset.columns.length} columns**: ${dataset.columns
-              .slice(0, 8)
-              .map((column) => `\`${column.name}\``)
-              .join(", ")}.`,
-          },
-        ],
-      },
-    ]);
-    setIsStreaming(false);
+    if (isStreaming) return;
+    void sendMessage({ text });
   };
 
   return (
@@ -75,7 +61,35 @@ export function ChatThread({ chatId }: { chatId: string }) {
 
       <div className="bg-background/80 shrink-0 border-t px-4 pt-3 pb-4 backdrop-blur">
         <div className="mx-auto w-full max-w-3xl">
-          <ChatComposer onSend={send} isStreaming={isStreaming} onStop={() => setIsStreaming(false)} />
+          {error ? (
+            <div
+              className="border-destructive/40 bg-destructive/5 mb-2 flex items-center justify-between gap-3 rounded-lg border px-3 py-2 text-xs"
+              role="alert"
+            >
+              <span className="truncate">{error.message}</span>
+              <div className="flex shrink-0 gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    clearError();
+                    void regenerate();
+                  }}
+                >
+                  Retry
+                </Button>
+                <Button size="sm" variant="ghost" onClick={clearError}>
+                  Dismiss
+                </Button>
+              </div>
+            </div>
+          ) : null}
+          <ChatComposer
+            onSend={send}
+            onStop={() => void stop()}
+            isStreaming={isStreaming}
+            disabled={isStreaming}
+          />
           <p className="text-muted-foreground mt-2 text-center text-[11px]">
             Answers are generated from your uploaded dataset only.
           </p>

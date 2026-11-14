@@ -11,6 +11,7 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@ai-sdk/groq": "^4.0.84",
     "@ai-sdk/react": "^4",
     "@base-ui/react": "^1.9.0",
     "@daypicker/react": "^10.0.2",
