@@ -1,4 +1,5 @@
 export * from "./hooks";
+export * from "./components/chat-view";
 export * from "./components/composer";
 export * from "./components/follow-up-chips";
 export * from "./components/message-list";

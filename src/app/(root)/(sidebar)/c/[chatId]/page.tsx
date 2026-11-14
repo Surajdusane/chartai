@@ -1,7 +1,6 @@
 ﻿import { prefetchChat } from "@/features/chats/server/prefetch-chats";
+import { ChatView } from "@/features/chats/components/chat-view";
 import { HydrateClient } from "@/trpc/server";
-
-import { ChatView } from "./_components/chat-view";
 
 const page = async ({ params }: PageProps<"/c/[chatId]">) => {
   const { chatId } = await params;

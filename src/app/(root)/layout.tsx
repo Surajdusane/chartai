@@ -3,14 +3,6 @@ import { Geist, Geist_Mono, Inter } from "next/font/google";
 
 import "@/styles/globals.css";
 
-import { Suspense } from "react";
-
-import { ConfirmationDialog } from "@/hooks/use-confirm";
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { Skeleton } from "@/components/ui/skeleton";
-import { AppSidebar } from "@/features/chats/components/app-sidebar";
-import { prefetchChats } from "@/features/chats/server/prefetch-chats";
-import { HydrateClient } from "@/trpc/server";
 import { cn } from "@/lib/utils";
 import { Providers } from "@/providers";
 
@@ -25,8 +17,6 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
-  prefetchChats();
-
   return (
     <html
       lang="en"
@@ -41,28 +31,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
     >
       <body className="h-full">
-        <Providers>
-          <HydrateClient>
-            <SidebarProvider className="h-dvh overflow-hidden">
-              <Suspense fallback={<SidebarFallback />}>
-                <AppSidebar />
-              </Suspense>
-              <SidebarInset className="min-h-0 min-w-0 overflow-hidden">{children}</SidebarInset>
-              <ConfirmationDialog />
-            </SidebarProvider>
-          </HydrateClient>
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
-  );
-}
-
-function SidebarFallback() {
-  return (
-    <div className="bg-sidebar hidden w-64 shrink-0 flex-col gap-2 p-2 md:flex">
-      <Skeleton className="h-8 w-full" />
-      <Skeleton className="h-7 w-5/6" />
-      <Skeleton className="h-7 w-4/6" />
-    </div>
   );
 }
