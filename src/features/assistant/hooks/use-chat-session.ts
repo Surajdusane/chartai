@@ -39,7 +39,15 @@ export const useChatSession = (input: { chatId: string; initialMessages: UIMessa
       });
     },
     onFinish: () => {
-      queryClient.invalidateQueries(trpc.chats.getMany.queryOptions());
+      const invalidate = () => {
+        queryClient.invalidateQueries(trpc.chats.getMany.queryOptions());
+        queryClient.invalidateQueries(trpc.chats.getById.queryOptions({ id: input.chatId }));
+      };
+
+      invalidate();
+      // The title is written in `after()` once the response is already done,
+      // so it lands a moment later than the last message.
+      setTimeout(invalidate, 2_500);
     },
   });
 };

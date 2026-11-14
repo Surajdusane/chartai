@@ -7,11 +7,15 @@ import { useStickToBottom } from "@/features/chats/hooks/use-stick-to-bottom";
 
 import { JumpToLatest } from "./jump-to-latest";
 import { MessageItem } from "./message-item";
+import { ThinkingIndicator } from "./thinking-indicator";
 
 export function MessageList(props: {
   messages: UIMessage[];
   isStreaming: boolean;
   emptyState?: React.ReactNode;
+  thinkingLabel?: string | null;
+  stopped?: boolean;
+  onRegenerate?: () => void;
 }) {
   const lastMessage = props.messages.at(-1);
   const contentKey = useMemo(
@@ -19,7 +23,8 @@ export function MessageList(props: {
     [props.messages.length, lastMessage?.parts.length],
   );
 
-  const { containerRef, isPinned, scrollToBottom } = useStickToBottom(contentKey);
+  const { containerRef, contentRef, isPinned, scrollToBottom } = useStickToBottom(contentKey);
+  const hasUserMessage = props.messages.some((message) => message.role === "user");
 
   if (props.messages.length === 0) {
     return <div className="flex min-h-0 flex-1 items-center justify-center p-6">{props.emptyState}</div>;
@@ -34,23 +39,26 @@ export function MessageList(props: {
         aria-live="polite"
         aria-label="Conversation"
       >
-        <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 py-8">
-          {props.messages.map((message, index) => (
-            <MessageItem
-              key={message.id}
-              message={message}
-              isStreaming={props.isStreaming && index === props.messages.length - 1}
-            />
-          ))}
-          {props.isStreaming && lastMessage?.role !== "assistant" && (
-            <div className="flex justify-start">
-              <div className="bg-card border border-border rounded-2xl p-4 w-full max-w-[min(42rem,85%)]">
-                <h4 className="shimmer text-muted-foreground font-medium text-sm">Generating response</h4>
-                <p className="shimmer text-muted-foreground mt-2">Analyzing your data…</p>
-                <p className="shimmer text-muted-foreground mt-1 w-3/4">Please wait…</p>
-              </div>
-            </div>
-          )}
+        <div
+          ref={contentRef}
+          className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-3 py-6 sm:gap-8 sm:px-4 sm:py-8"
+        >
+          {props.messages.map((message, index) => {
+            const isLast = index === props.messages.length - 1;
+
+            return (
+              <MessageItem
+                key={message.id}
+                message={message}
+                isStreaming={props.isStreaming && isLast}
+                showActions={isLast && !props.isStreaming}
+                canRegenerate={isLast && hasUserMessage && Boolean(props.onRegenerate)}
+                onRegenerate={props.onRegenerate}
+                stopped={isLast && Boolean(props.stopped)}
+              />
+            );
+          })}
+          {props.thinkingLabel ? <ThinkingIndicator label={props.thinkingLabel} /> : null}
         </div>
       </div>
       {!isPinned ? <JumpToLatest onClick={scrollToBottom} /> : null}

@@ -45,7 +45,7 @@ export function ChartBlock({ output }: { output: RenderChartOutput }) {
         </div>
 
         <TabsPanel value="chart" className="p-4">
-          <div className="h-[320px] w-full">
+          <div className="h-[280px] w-full sm:h-[340px]">
             <ChartRenderer payload={payload} />
           </div>
         </TabsPanel>

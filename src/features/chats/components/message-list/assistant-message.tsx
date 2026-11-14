@@ -3,26 +3,34 @@
 import { getToolName, isReasoningUIPart, isTextUIPart, isToolUIPart, type UIMessage } from "ai";
 import { Streamdown } from "streamdown";
 
+import { MessageActions } from "./message-actions";
 import { ReasoningPart } from "./reasoning-part";
 import { ToolPart } from "./tool-part";
 
-export function AssistantMessage({ message, isStreaming }: { message: UIMessage; isStreaming: boolean }) {
-  const textParts = message.parts.filter(isTextUIPart);
+export function AssistantMessage({
+  message,
+  isStreaming,
+  showActions = false,
+  canRegenerate = false,
+  onRegenerate,
+  stopped = false,
+}: {
+  message: UIMessage;
+  isStreaming: boolean;
+  showActions?: boolean;
+  canRegenerate?: boolean;
+  onRegenerate?: () => void;
+  stopped?: boolean;
+}) {
+  const hasText = message.parts.some((part) => isTextUIPart(part) && part.text.trim().length > 0);
 
-  if (isStreaming && textParts.length === 0) {
-    return (
-      <div className="flex justify-start">
-        <div className="bg-card border border-border rounded-2xl p-4 w-full max-w-[min(42rem,85%)]">
-          <h4 className="shimmer text-muted-foreground font-medium text-sm">Generating response</h4>
-          <p className="shimmer text-muted-foreground mt-2">Analyzing your data…</p>
-          <p className="shimmer text-muted-foreground mt-1 w-3/4">Please wait…</p>
-        </div>
-      </div>
-    );
+  if (isStreaming && !hasText) {
+    // The thinking row in `MessageList` covers this state.
+    return null;
   }
 
   return (
-    <div className="min-w-0">
+    <div className="group min-w-0">
       {message.parts.map((part, index) => {
         if (isTextUIPart(part)) {
           return (
@@ -50,6 +58,13 @@ export function AssistantMessage({ message, isStreaming }: { message: UIMessage;
 
         return null;
       })}
+
+      {showActions && onRegenerate ? (
+        <div className="mt-1.5 flex items-center gap-2">
+          <MessageActions message={message} canRegenerate={canRegenerate} onRegenerate={onRegenerate} />
+          {stopped ? <span className="text-muted-foreground text-xs">Stopped</span> : null}
+        </div>
+      ) : null}
     </div>
   );
 }

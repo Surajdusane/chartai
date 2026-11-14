@@ -9,12 +9,15 @@
   type UIMessage,
 } from "ai";
 import { z } from "zod";
+import { after } from "next/server";
 
 import { getDb } from "@/db";
-import { getChatMessages, getChatWithDataset, saveChatMessages } from "@/db/queries";
+import { getChatMessages, getChatWithDataset, renameChat, saveChatMessages } from "@/db/queries";
 import { getChatModel } from "@/features/assistant/server/model";
 import { buildSystemPrompt } from "@/features/assistant/server/system-prompt";
 import { createChatTools } from "@/features/assistant/server/tools";
+import { generateChatTitle } from "@/features/chats/server/generate-title";
+import { createDatasetTitle } from "@/features/datasets/utils/create-dataset-title";
 
 export const maxDuration = 60;
 
@@ -57,7 +60,8 @@ export async function POST(request: Request) {
     return Response.json({ error: "Chat not found." }, { status: 404 });
   }
 
-  const tools = createChatTools({ columns: chat.dataset.columns, rows: chat.dataset.rows });
+  const dataset = chat.dataset;
+  const tools = createChatTools({ columns: dataset.columns, rows: dataset.rows });
 
   let incoming: UIMessage[];
   try {
@@ -73,7 +77,7 @@ export async function POST(request: Request) {
 
   const result = streamText({
     model: getChatModel(),
-    system: buildSystemPrompt(chat.dataset),
+    system: buildSystemPrompt(dataset),
     messages: await convertToModelMessages(messages, {
       tools,
       ignoreIncompleteToolCalls: true,
@@ -94,7 +98,7 @@ export async function POST(request: Request) {
         console.error("[chat] stream error", error);
         return "The assistant hit an error while answering. Try again.";
       },
-      onEnd: async ({ messages: finalMessages }) => {
+      onEnd: async ({ messages: finalMessages, isCancelled }) => {
         // Persist partial answers too: `stop()` closes the client stream, which
         // cancels the response and lands here without a `finish` chunk.
         const persistable = finalMessages.filter(
@@ -105,6 +109,36 @@ export async function POST(request: Request) {
           await saveChatMessages(db, { chatId: chat.id, messages: persistable });
         } catch (error) {
           console.error("[chat] could not persist messages", error);
+          return;
+        }
+
+        // A stopped answer is saved, but it should not become the chat's title.
+        if (isCancelled) return;
+
+        // Only rename chats that still carry the name derived from the uploaded file.
+        const isAutoTitle = chat.title === createDatasetTitle(dataset.name);
+        const isFirstAnswer = persistable.filter((message) => message.role === "user").length <= 1;
+
+        if (!isAutoTitle || !isFirstAnswer) return;
+
+        // `after` runs once the response is already with the client, so a slow
+        // title call never keeps the stream in `streaming` any longer. When the
+        // environment has no `after`, the chat simply keeps its file-derived title.
+        const titleTask = async () => {
+          try {
+            const title = await generateChatTitle(persistable);
+            if (title) {
+              await renameChat(db, { id: chat.id, title });
+            }
+          } catch (error) {
+            console.error("[chat] could not generate a title", error);
+          }
+        };
+
+        try {
+          after(titleTask);
+        } catch (error) {
+          console.error("[chat] could not schedule a title", error);
         }
       },
     }),

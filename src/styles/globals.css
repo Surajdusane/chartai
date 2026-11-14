@@ -246,6 +246,42 @@
   }
 }
 
+/* Text shimmer — the same sweeping highlight as <Skeleton>, clipped to glyphs.
+   Used by the thinking/loading labels so they read as "working" instead of static. */
+@keyframes shimmer-sweep {
+  from {
+    background-position: 0% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
+}
+
+@utility shimmer {
+  background-image: linear-gradient(
+    100deg,
+    var(--muted-foreground) 35%,
+    var(--foreground) 50%,
+    var(--muted-foreground) 65%
+  );
+  background-size: 200% 100%;
+  background-repeat: repeat;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: shimmer-sweep 2s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shimmer {
+    animation: none;
+    color: var(--muted-foreground);
+    background-image: none;
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
+  }
+}
+
 /* Custom scrollbar styling. Thanks @shadcn-ui */
 ::-webkit-scrollbar {
   width: 5px;

@@ -1,7 +1,9 @@
 export { MessageList } from "./message-list";
 export { MessageItem } from "./message-item";
+export { MessageActions } from "./message-actions";
 export { UserMessage } from "./user-message";
 export { AssistantMessage } from "./assistant-message";
 export { ReasoningPart } from "./reasoning-part";
+export { ThinkingIndicator } from "./thinking-indicator";
 export { ToolPart } from "./tool-part";
 export { JumpToLatest } from "./jump-to-latest";
