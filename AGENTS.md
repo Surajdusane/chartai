@@ -15,7 +15,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ## What we're building
 
-A **ai chart agent**. Where you can upload your databse files like excel file and you ai analyse and genrate multiple charts using it which already configure in project.
+**AI Chart Agent** - A ChatGPT-style web app where every new chat starts with an Excel/CSV upload. Once the file is loaded, the user prompts in a normal chat interface, and responses appear as inline component blocks that render charts.
 
 ## precautions
 
