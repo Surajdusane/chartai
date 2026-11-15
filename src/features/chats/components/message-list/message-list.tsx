@@ -16,6 +16,7 @@ export function MessageList(props: {
   thinkingLabel?: string | null;
   stopped?: boolean;
   onRegenerate?: () => void;
+  footer?: React.ReactNode;
 }) {
   const lastMessage = props.messages.at(-1);
   const contentKey = useMemo(
@@ -61,6 +62,7 @@ export function MessageList(props: {
             );
           })}
           {props.thinkingLabel ? <ThinkingIndicator label={props.thinkingLabel} /> : null}
+          {props.footer ? props.footer : null}
         </div>
       </div>
       {!isPinned ? <JumpToLatest onClick={scrollToBottom} /> : null}

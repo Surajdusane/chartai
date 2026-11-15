@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import type { ColumnProfile } from "@/db/schema";
 
 export function ChatEmptyState({
@@ -36,13 +37,14 @@ export function ChatEmptyState({
           Try these questions to explore charts and insights from this sample dataset.
         </p>
       ) : null}
+      <Separator />
       <div className="flex flex-wrap justify-center gap-2">
         {prompts.map((prompt) => (
           <Button
             key={prompt}
             variant="ghost"
             size="sm"
-            className="h-auto whitespace-normal py-2 text-left"
+            className="h-auto whitespace-normal py-2 text-left text-muted-foreground"
             onClick={() => onPick(prompt)}
           >
             {prompt}

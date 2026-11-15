@@ -42,22 +42,25 @@ export function ChatThread({ chatId }: { chatId: string }) {
         ? "Reading your dataset…"
         : null;
 
+  const dataset = chat.dataset;
+  const sampleQuestions = dataset ? getSampleQuestionsByDatasetName(dataset.name) : undefined;
+  const remainingSampleQuestions = useMemo(() => {
+    if (!sampleQuestions) return undefined;
+    const asked = new Set(
+      messages
+        .filter((message) => message.role === "user")
+        .map((message) => getMessageText(message).trim()),
+    );
+    return sampleQuestions.filter((question) => !asked.has(question));
+  }, [messages, sampleQuestions]);
+
   const showFollowUps =
     status === "ready" &&
     !error &&
-    messages.length <= 8 &&
-    messages.some((message) => message.role === "assistant");
-
-  if (!chat.dataset) {
-    return (
-      <div className="flex h-full min-h-0 items-center justify-center p-6">
-        <p className="text-muted-foreground text-sm">This chat has no dataset attached.</p>
-      </div>
-    );
-  }
-
-  const dataset = chat.dataset;
-  const sampleQuestions = getSampleQuestionsByDatasetName(dataset.name);
+    messages.some((message) => message.role === "assistant") &&
+    (sampleQuestions
+      ? (remainingSampleQuestions?.length ?? 0) > 0
+      : messages.length <= 8);
 
   const send = (text: string) => {
     if (isStreaming) return;
@@ -74,6 +77,14 @@ export function ChatThread({ chatId }: { chatId: string }) {
     setWasStopped(false);
     void regenerate();
   };
+
+  if (!dataset) {
+    return (
+      <div className="flex h-full min-h-0 items-center justify-center p-6">
+        <p className="text-muted-foreground text-sm">This chat has no dataset attached.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-full min-h-0 flex-col">
@@ -99,8 +110,18 @@ export function ChatThread({ chatId }: { chatId: string }) {
           <ChatEmptyState
             onPick={send}
             columns={dataset.columns}
-            suggestedQuestions={sampleQuestions}
+            suggestedQuestions={remainingSampleQuestions}
           />
+        }
+        footer={
+          showFollowUps ? (
+            <FollowUpChips
+              columns={dataset.columns}
+              onPick={send}
+              disabled={isStreaming}
+              prompts={remainingSampleQuestions}
+            />
+          ) : null
         }
       />
 
@@ -120,11 +141,6 @@ export function ChatThread({ chatId }: { chatId: string }) {
                   Dismiss
                 </Button>
               </div>
-            </div>
-          ) : null}
-          {showFollowUps ? (
-            <div className="mb-2">
-              <FollowUpChips columns={dataset.columns} onPick={send} disabled={isStreaming} />
             </div>
           ) : null}
           <ChatComposer
