@@ -24,8 +24,8 @@ export const techStack = [
 ];
 
 export const links = [
-  { label: "Repository", href: "https://github.com/YOUR_USERNAME/chartai", placeholder: true },
-  { label: "Live site", href: "https://YOUR_DEPLOYMENT_URL.com", placeholder: true },
+  { label: "Repository", href: "https://github.com/surajdusane/chartai", placeholder: true },
+  { label: "Live site", href: "https://chartai-woad.vercel.app", placeholder: true },
   { label: "API docs", href: "/api/docs", placeholder: false },
 ];
 
@@ -50,7 +50,7 @@ export const whatToNotExpect = [
 ];
 
 export const contact = {
-  email: "YOUR_EMAIL@example.com",
-  phone: "YOUR_PHONE_NUMBER",
+  email: "work.surajdusane@gmail.com",
+  phone: "9579330721",
   note: "Feel free to reach out for opportunities or questions.",
 };
