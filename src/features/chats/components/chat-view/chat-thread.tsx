@@ -11,6 +11,7 @@ import { MessageList } from "@/features/chats/components/message-list";
 import { useGetChat } from "@/features/chats/hooks";
 import { getMessageText } from "@/features/chats/utils/get-message-text";
 import { toUiMessages } from "@/features/chats/utils/to-ui-messages";
+import { getSampleQuestionsByDatasetName } from "@/features/datasets/utils/samples";
 
 import { ChatEmptyState } from "./chat-empty-state";
 
@@ -56,6 +57,7 @@ export function ChatThread({ chatId }: { chatId: string }) {
   }
 
   const dataset = chat.dataset;
+  const sampleQuestions = getSampleQuestionsByDatasetName(dataset.name);
 
   const send = (text: string) => {
     if (isStreaming) return;
@@ -93,7 +95,13 @@ export function ChatThread({ chatId }: { chatId: string }) {
         thinkingLabel={thinkingLabel}
         stopped={wasStopped && status === "ready"}
         onRegenerate={handleRegenerate}
-        emptyState={<ChatEmptyState onPick={send} columns={dataset.columns} />}
+        emptyState={
+          <ChatEmptyState
+            onPick={send}
+            columns={dataset.columns}
+            suggestedQuestions={sampleQuestions}
+          />
+        }
       />
 
       <div className="bg-background/80 shrink-0 border-t px-2 pt-3 pb-3 backdrop-blur sm:px-4 sm:pb-4">

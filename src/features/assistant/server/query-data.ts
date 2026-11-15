@@ -6,7 +6,7 @@ export const queryDataInputSchema = z.object({
   columns: z
     .array(z.string().min(1))
     .min(1)
-    .max(6)
+    .max(12)
     .optional()
     .describe("Columns to return, in order. Defaults to the group key, the metric, or the first columns."),
   filters: z

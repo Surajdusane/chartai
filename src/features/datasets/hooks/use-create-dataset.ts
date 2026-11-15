@@ -13,26 +13,7 @@ export const useCreateDataset = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  const mutation = useMutation(
-    trpc.datasets.create.mutationOptions({
-      onSuccess: ({ chatId }) => {
-        toastManager.add({
-          title: "Dataset ready",
-          description: "Ask a question or request a chart.",
-          type: "success",
-        });
-        queryClient.invalidateQueries(trpc.chats.getMany.queryOptions());
-        router.push(`/c/${chatId}`);
-      },
-      onError: (error) => {
-        toastManager.add({
-          title: "Could not read this file",
-          description: error.message,
-          type: "error",
-        });
-      },
-    }),
-  );
+  const mutation = useMutation(trpc.datasets.create.mutationOptions());
 
   return {
     ...mutation,
@@ -55,14 +36,30 @@ export const useCreateDataset = () => {
         return;
       }
 
-      const data = await readFileAsBase64(file);
+      try {
+        const data = await readFileAsBase64(file);
 
-      mutation.mutate({
-        filename: file.name,
-        mimeType: file.type || "application/octet-stream",
-        sizeBytes: file.size,
-        data,
-      });
+        const result = await mutation.mutateAsync({
+          filename: file.name,
+          mimeType: file.type || "application/octet-stream",
+          sizeBytes: file.size,
+          data,
+        });
+
+        toastManager.add({
+          title: "Dataset ready",
+          description: "Pick a suggested question or ask your own.",
+          type: "success",
+        });
+        void queryClient.invalidateQueries(trpc.chats.getMany.queryOptions());
+        router.push(`/c/${result.chatId}`);
+      } catch (error) {
+        toastManager.add({
+          title: "Could not read this file",
+          description: error instanceof Error ? error.message : "Something went wrong.",
+          type: "error",
+        });
+      }
     },
   };
 };
