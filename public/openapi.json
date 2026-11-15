@@ -2,8 +2,9 @@
   "openapi": "3.1.1",
   "jsonSchemaDialect": "https://spec.openapis.org/oas/3.1/dialect/base",
   "info": {
-    "title": "ProWater Ops API",
-    "version": "0.1.0"
+    "title": "Chart AI API",
+    "version": "0.1.0",
+    "description": "REST API for Chart AI - upload a spreadsheet and chat with it to generate charts."
   },
   "servers": [
     {

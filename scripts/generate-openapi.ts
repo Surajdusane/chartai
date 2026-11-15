@@ -25,10 +25,13 @@ const SERVER_URL = process.env.OPENAPI_SERVER_URL?.trim() || "/api/trpc";
 async function main() {
   const document = await generateOpenAPIDocument(ROUTER_FILE, {
     exportName: "AppRouter",
-    title: "ProWater Ops API",
+    title: "Chart AI API",
     version: process.env.npm_package_version ?? "0.1.0",
     servers: [{ url: SERVER_URL }],
   });
+
+  document.info.description =
+    "REST API for Chart AI - upload a spreadsheet and chat with it to generate charts.";
 
   mkdirSync(path.dirname(OUTPUT_FILE), { recursive: true });
   writeFileSync(OUTPUT_FILE, `${JSON.stringify(document, null, 2)}\n`, "utf8");
