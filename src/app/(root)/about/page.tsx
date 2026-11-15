@@ -1,11 +1,8 @@
 import Link from "next/link";
 import {
   ArrowLeft,
-  BookOpen,
   CheckCircle2,
   Code2,
-  ExternalLink,
-  GitFork,
   Globe,
   Mail,
   Phone,
@@ -101,31 +98,17 @@ export default function AboutPage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-2">
-            {links.map((link) =>
-              link.placeholder ? (
-                <span
-                  key={link.label}
-                  className="text-muted-foreground inline-flex items-center gap-2 text-sm"
-                >
-                  {link.label === "Repository" ? (
-                    <GitFork className="size-4" />
-                  ) : (
-                    <Globe className="size-4" />
-                  )}
-                  {link.href}
-                </span>
-              ) : (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  className="text-foreground hover:text-primary inline-flex items-center gap-2 text-sm underline underline-offset-4"
-                >
-                  <BookOpen className="size-4" />
-                  {link.label}
-                  <ExternalLink className="size-3.5" />
-                </Link>
-              ),
-            )}
+            {links.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground hover:underline underline-offset-4 text-sm"
+              >
+                {link.label}
+              </a>
+            ))}
           </CardContent>
         </Card>
 

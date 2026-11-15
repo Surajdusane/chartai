@@ -24,9 +24,10 @@ export const techStack = [
 ];
 
 export const links = [
-  { label: "Repository", href: "https://github.com/surajdusane/chartai", placeholder: true },
-  { label: "Live site", href: "https://chartai-woad.vercel.app", placeholder: true },
-  { label: "API docs", href: "/api/docs", placeholder: false },
+  { label: "Repository", href: "https://github.com/surajdusane/chartai" },
+  { label: "Live site", href: "https://chartai-woad.vercel.app" },
+  { label: "Portfolio", href: "https://surajdusane.vercel.app/" },
+  { label: "API docs", href: "/api/docs" },
 ];
 
 export const howToUse = [

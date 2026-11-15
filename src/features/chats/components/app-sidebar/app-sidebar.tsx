@@ -19,6 +19,7 @@ import { useGetChats } from "@/features/chats/hooks";
 import { groupChatsByDate } from "@/features/chats/utils/group-chats-by-date";
 
 import { ChatList } from "./chat-list";
+import { Logo } from "./logo";
 import { ThemeToggle } from "./theme-toggle";
 
 export function AppSidebar() {
@@ -36,9 +37,7 @@ export function AppSidebar() {
             tooltip="Chart AI"
             className="group-data-[collapsible=icon]:hidden"
           >
-            <div className="flex size-8 items-center justify-center rounded-lg border border-sidebar-border bg-sidebar text-xs font-semibold tracking-tight">
-              C
-            </div>
+            <Logo />
             <span className="truncate font-semibold tracking-tight">Chart AI</span>
           </SidebarMenuButton>
           <SidebarTrigger className="size-7" />
